@@ -22,6 +22,7 @@ public class Visitor implements Runnable{
 
     private void enterBuilding() {
         System.out.println(place.countDuration() + this.toString() + " вошел в здание, ему нужно на " + this.floor + " этаж");
+
         if (place.enterControl(this))
             place.passControl(this);
     }
@@ -55,6 +56,12 @@ public class Visitor implements Runnable{
             place.exitLift(this);
         }
 
+    }
+
+    void walk(){
+        System.out.println(this.toString() + " Поднялся пешком на " + this.floor);
+        doSomeWork();
+        goDown();
     }
 
     @Override

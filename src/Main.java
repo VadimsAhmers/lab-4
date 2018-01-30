@@ -2,8 +2,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int n = 10;
-        int delay = 500;
+        int n = 5;
+        int delay = 1000;
 
         BusinessCenter place = new BusinessCenter();
 
@@ -14,7 +14,6 @@ public class Main {
             thread.start();
 
             try {
-                //thread.join();
                 Thread.sleep(delay);
 
             } catch (InterruptedException e) {
