@@ -1,12 +1,12 @@
 public class Visitor implements Runnable{
 
 
-    static int totalCount = 1;
+    private static int totalCount = 1;
 
-    BusinessCenter place;
-    int num, floor;
+    private BusinessCenter place;
+    private int num, floor;
 
-    public Visitor(BusinessCenter place) {
+     Visitor(BusinessCenter place) {
         this.place = place;
         this.num = totalCount++;
         floor = (int) (1 + Math.random() * 10);
@@ -20,13 +20,13 @@ public class Visitor implements Runnable{
         goDown();
     }
 
-    void enterBuilding() {
-        System.out.println(this.toString() + " вошел в здание");
+    private void enterBuilding() {
+        System.out.println(place.countDuration() + this.toString() + " вошел в здание, ему нужно на " + this.floor + " этаж");
         if (place.enterControl(this))
             place.passControl(this);
     }
 
-    void goUp(){
+    private void goUp(){
         if (place.callLiftAndWait(this)) {
             place.moveLift(null, 1);
             place.enterLift(this);
@@ -36,11 +36,18 @@ public class Visitor implements Runnable{
 
     }
 
-    void doSomeWork(){
+    private void doSomeWork(){
+        System.out.println(place.countDuration() + this.toString() + " делает свои дела");
+        try {
+            Thread.sleep((long)Math.abs(Math.random()*1000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(place.countDuration() + this.toString() + " закончил свои дела.");
 
     }
 
-    void goDown(){
+    private void goDown(){
         if (place.callLiftAndWait(this)) {
             place.moveLift(null, this.floor);
             place.enterLift(this);

@@ -1,9 +1,10 @@
-public class BusinessCenter {
+ class BusinessCenter {
 
-    int liftFloor = 1;
-    Visitor visitorAtControl = null;
-    Visitor visitorInLift = null;
-    boolean liftFree;
+    private int liftFloor = 1;
+    private Visitor visitorAtControl = null;
+    private Visitor visitorInLift = null;
+    private boolean liftFree = true;
+    private long startTime = System.currentTimeMillis();
 
     boolean enterControl (Visitor visitor){
 
@@ -18,7 +19,7 @@ public class BusinessCenter {
         }
         visitorAtControl = visitor;
 
-        System.out.println(visitor.toString() + " вошел в проходную.");
+        System.out.println(countDuration() + visitor.toString() + " вошел в проходную.");
         return true;
     }
 
@@ -30,20 +31,22 @@ public class BusinessCenter {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println(visitor.toString() + " покинул проходную.");
+        System.out.println(countDuration() + visitor.toString() + " покинул проходную.");
         visitorAtControl = null;
+        notifyAll();
     }
 
     boolean callLiftAndWait (Visitor visitor){
-        while (visitorInLift!=null){
+        while (!liftFree){
             try {
                 Thread.currentThread().wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+        liftFree = false;
         visitorInLift = visitor;
-        System.out.println(visitor.toString() + " вызвал лифт");
+        System.out.println(countDuration() + visitor.toString() + " вызвал лифт");
         return true;
 
     }
@@ -57,21 +60,28 @@ public class BusinessCenter {
                 e.printStackTrace();
             }
             System.out.println(
-                    targetFloor > liftFloor? "Лифт поднялся на " + targetFloor + " этаж"
-                                        : "Лифт спустился на " + targetFloor + " этаж");
+                    targetFloor > liftFloor? countDuration() + "Лифт поднялся на " + targetFloor + " этаж"
+                                        : countDuration() + "Лифт спустился на " + targetFloor + " этаж");
         }
+        else System.out.println(countDuration() + "Лифт находится на том же этаже, что и посетитель");
         liftFloor = targetFloor;
     }
 
     void enterLift(Visitor visitor){
-        System.out.println(visitor.toString() + " вошел в лифт");
+        System.out.println(countDuration() + visitor.toString() + " вошел в лифт");
 
     }
 
     void exitLift(Visitor visitor){
         visitorInLift = null;
-        System.out.println(visitor.toString() + " вышел из лифта");
+        liftFree = true;
+        System.out.println(countDuration() + visitor.toString() + " вышел из лифта");
+        notifyAll();
 
+    }
+    String countDuration(){
+        long duration =  System.currentTimeMillis() - startTime;
+        return duration + " ms: ";
     }
 }
 
